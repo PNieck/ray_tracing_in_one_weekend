@@ -26,7 +26,7 @@ impl Vec3 {
     }
 
     pub fn unit_z() -> Vec3 {
-        Vec3 {x: 1.0, y: 0.0, z: 1.0}
+        Vec3 {x: 0.0, y: 0.0, z: 1.0}
     }
 
     pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
@@ -41,8 +41,8 @@ impl Vec3 {
         }
     }
 
-    pub fn unit_vector(v: Vec3) -> Vec3 {
-        1.0 / v.length() * v
+    pub fn unit(v: Vec3) -> Vec3 {
+        v / v.length()
     }
 
     pub fn length_squared(&self) -> f64 {
@@ -70,7 +70,7 @@ impl ops::Add for Vec3 {
         Vec3{
             x: self.x + rhs.x,
             y: self.y + rhs.y,
-            z: self.z + rhs.y
+            z: self.z + rhs.z
         }
     }
 }
@@ -82,7 +82,7 @@ impl ops::Sub for Vec3 {
         Vec3{
             x: self.x - rhs.x,
             y: self.y - rhs.y,
-            z: self.z - rhs.y
+            z: self.z - rhs.z
         }
     }
 }
@@ -91,7 +91,7 @@ impl ops::AddAssign for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
         self.x += rhs.x;
         self.y += rhs.y;
-        self.z += rhs.y;
+        self.z += rhs.z;
     }
 }
 
@@ -99,7 +99,7 @@ impl ops::SubAssign for Vec3 {
     fn sub_assign(&mut self, rhs: Self) {
         self.x -= rhs.x;
         self.y -= rhs.y;
-        self.z -= rhs.y;
+        self.z -= rhs.z;
     }
 }
 

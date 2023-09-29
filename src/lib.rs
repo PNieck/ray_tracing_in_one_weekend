@@ -42,17 +42,16 @@ pub fn render_image(file_path: &str, img_width: i32, aspect_ratio: f64) -> Resul
     writer.write_all(format!("{img_width} {img_height}\n").as_bytes())?;
     writer.write_all(format!("{}\n", color::MAX_VALUE).as_bytes())?;
 
-    for column in 0..img_height {
-        print!("\rRemaining scanlines: {:>5}", img_height - column - 1);
+    for row in 0..img_height {
+        print!("\rRemaining scanlines: {:>5}", img_height - row - 1);
         io::stdout().flush().expect("Cannot flush stdout");
 
-        for row in 0..img_width {
-            let pixel_center = Position::translation(pixel00, column * pixel_delta_h + row * pixel_delta_v);
+        for column in 0..img_width {
+            let pixel_center = Position::translation(pixel00, row * pixel_delta_v + column * pixel_delta_h);
             let ray_direction = pixel_center - camera_center;
             let ray = Ray::new(camera_center, ray_direction);
 
-            let pixel_color = ray_color(&ray);
-            save_pixel(pixel_color, &mut writer)?;
+            save_pixel(ray_color(&ray), &mut writer)?;
         }
     }
 
@@ -62,8 +61,15 @@ pub fn render_image(file_path: &str, img_width: i32, aspect_ratio: f64) -> Resul
 }
 
 
-fn ray_color(_ray: &Ray) -> Color {
-    Color::from_rgb(0, 0, 0)
+fn ray_color(ray: &Ray) -> Color {
+    let unit_direction = Vec3::unit(ray.direction);
+
+    let white = Color::from_rgb(255, 255, 255);
+    let sky_blue = Color::from_rgb(127, 178, 255);
+    
+    let coefficient = 0.5 * (unit_direction.y + 1.0);
+
+    (1.0-coefficient) * white + coefficient * sky_blue
 }
 
 

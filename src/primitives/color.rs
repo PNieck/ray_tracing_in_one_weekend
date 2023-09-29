@@ -1,3 +1,4 @@
+use std::ops;
 
 pub const MAX_VALUE: u8 = 255;
 const MAX_VALUE_F: f32 = MAX_VALUE as f32;
@@ -29,5 +30,67 @@ impl Color {
 
     pub fn blue(self) -> u8 {
         (self.blue * MAX_VALUE_F) as u8
+    }
+}
+
+impl Color {
+    fn trim_component(val: f32) -> f32 {
+        if val > 1.0 {
+            return 1.0;
+        }
+        
+        if val < 0.0 {
+            return  0.0;
+        }
+
+        return  val;
+    }
+}
+
+impl ops::Mul<f32> for Color {
+    type Output = Color;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Color {
+            red: Color::trim_component(self.red * rhs),
+            green: Color::trim_component(self.green * rhs),
+            blue: Color::trim_component(self.blue * rhs),
+        }
+    }
+}
+
+impl ops::Mul<Color> for f32 {
+    type Output = Color;
+
+    fn mul(self, rhs: Color) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl ops::Mul<f64> for Color {
+    type Output = Color;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        self * rhs as f32
+    }
+}
+
+impl ops::Mul<Color> for f64 {
+    type Output = Color;
+
+    fn mul(self, rhs: Color) -> Self::Output {
+        rhs * self as f32
+    }
+}
+
+impl ops::Add for Color {
+    type Output = Color;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Color {
+            red: Color::trim_component(self.red + rhs.red),
+            green: Color::trim_component(self.green + rhs.green),
+            blue: Color::trim_component(self.blue + rhs.blue)
+        }
     }
 }
